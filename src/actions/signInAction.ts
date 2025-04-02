@@ -8,7 +8,7 @@ export const signInAction = async (formData: FormData) => {
 		await signIn("credentials", {
 			email: formData.get("email"),
 			password: formData.get("password"),
-			redirectTo: "/",
+			redirectTo: "/todo",
 		});
 	} catch (error) {
 		if (error instanceof AuthError) {

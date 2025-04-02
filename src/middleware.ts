@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { auth } from "@/auth";
 
-export const middleware = async (request: Request) => {
+export const middleware = async (request: NextRequest) => {
 	try {
+		const res = NextResponse.next();
+		const searchParams = request.nextUrl.searchParams.toString();
+		res.headers.set("searchParams", searchParams);
 		const session = await auth();
 		const url = new URL(request.url);
 
@@ -21,5 +24,5 @@ export const middleware = async (request: Request) => {
 };
 
 export const config = {
-	matcher: ["/book/:path*", "/"],
+	matcher: ["/book/:path*", "/", "/todo/:path*"],
 };
