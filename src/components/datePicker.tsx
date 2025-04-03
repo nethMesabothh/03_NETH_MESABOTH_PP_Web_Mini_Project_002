@@ -15,6 +15,7 @@ import {
 import { Noop, RefCallBack } from "react-hook-form";
 import { FormControl } from "./ui/form";
 import { useState } from "react";
+import { TaskType } from "@/types/tasks/TaskType";
 
 type props = {
 	onChange: (...event: any[]) => void;
@@ -23,9 +24,10 @@ type props = {
 	disabled?: boolean | undefined;
 	name: "endDate";
 	ref: RefCallBack;
+	initialTask: TaskType["payload"] | null;
 };
 
-export function DatePicker({ value, onChange }: props) {
+export function DatePicker({ value, onChange, initialTask }: props) {
 	const [open, setOpen] = useState<boolean>();
 
 	return (

@@ -12,33 +12,73 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import TaskComponent from "./task";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type props = {
 	task: TaskType["payload"];
 	onStatusChange: (taskId: string, newStatus: string) => void;
+	onEdit: (task: TaskType["payload"]) => void;
+	onDelete: (taskId: string) => void;
 };
 
-export default function CardComponent({ task, onStatusChange }: props) {
+export default function CardComponent({
+	task,
+	onStatusChange,
+	onEdit,
+	onDelete,
+}: props) {
 	return (
 		<div className="border border-gray-300 rounded-xl mt-8">
 			<div className="p-5">
 				<div className="flex justify-between">
 					<h2 className="text-xl font-bold capitalize">{task.taskTitle}</h2>
-					<Button>
+					<Button asChild>
 						<DropdownMenu>
 							<DropdownMenuTrigger>
 								<Ellipsis />
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
-								<DropdownMenuItem>
-									{/* <TaskComponent initialTasks={task}/> */}
+								<DropdownMenuItem onClick={() => onEdit(task)}>
+									<h1 className="w-full text-center">Update</h1>
 								</DropdownMenuItem>
-								<DropdownMenuItem>Delete</DropdownMenuItem>
+								<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+									<AlertDialog>
+										<AlertDialogTrigger className="w-full">
+											Delete
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>
+													Are you absolutely sure?
+												</AlertDialogTitle>
+												<AlertDialogDescription>
+													This action cannot be undone. This will permanently
+													delete your task.
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													onClick={() => onDelete(task.taskId)}
+												>
+													Continue
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</Button>

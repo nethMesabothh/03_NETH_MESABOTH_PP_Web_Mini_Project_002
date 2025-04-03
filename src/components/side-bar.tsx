@@ -120,13 +120,14 @@ const Sidebar = () => {
 								<UpdateWorkspaceComponent
 									workspaceId={workspace.workspaceId}
 									workspaceName={workspace.workspaceName}
+									setWorkspaces={setWorkspaces}
 								/>
 							</div>
 						))}
 					</div>
 				</div>
 			</div>
-			<Favorite />
+			<Favorite setWorkspaces={setWorkspaces} />
 			<LogoutButtonComponent />
 		</div>
 	);

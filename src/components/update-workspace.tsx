@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MouseEventHandler, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
 	DropdownMenu,
@@ -20,18 +20,28 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { Workspace } from "@/types/workspace/workspaceType";
 
 type props = {
 	workspaceId: string;
 	workspaceName: string;
+	setWorkspaces: React.Dispatch<React.SetStateAction<Workspace[] | undefined>>;
 };
 
-const UpdateWorkspaceComponent = ({ workspaceId, workspaceName }: props) => {
+const UpdateWorkspaceComponent = ({
+	workspaceId,
+	workspaceName,
+	setWorkspaces,
+}: props) => {
 	const [updateName, setUpdateName] = useState<string | undefined>();
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleOnSave = () => {
+		if (!updateName?.trim()) {
+			toast.error("Workspace name cannot be empty");
+			return;
+		}
+
 		updateWorkspaceByIdAction({
 			workspaceId,
 			workspaceName: updateName ?? "",
@@ -39,7 +49,13 @@ const UpdateWorkspaceComponent = ({ workspaceId, workspaceName }: props) => {
 			if (data) {
 				toast("Update successfully!");
 				setIsOpen(false);
-				window.location.reload();
+				setWorkspaces((prev) =>
+					prev?.map((workspace) =>
+						workspace.workspaceId === data.workspaceId
+							? { ...workspace, workspaceName: updateName }
+							: workspace
+					)
+				);
 			}
 		});
 	};
@@ -76,6 +92,10 @@ const UpdateWorkspaceComponent = ({ workspaceId, workspaceName }: props) => {
 										defaultValue={workspaceName}
 										className="col-span-3"
 										onChange={(e) => setUpdateName(e.target.value)}
+										onFocus={(e) => {
+											const value = e.target.value;
+											e.target.setSelectionRange(value.length, value.length);
+										}}
 									/>
 								</div>
 							</div>

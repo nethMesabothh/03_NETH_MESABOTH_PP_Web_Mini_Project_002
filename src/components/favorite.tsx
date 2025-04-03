@@ -2,6 +2,7 @@
 
 import { getAllWorkspaceAction } from "@/actions/workspace/getAllWorkspaceAction";
 import {
+	Workspace,
 	WorkspacePayloadType,
 	WorkspaceType,
 } from "@/types/workspace/workspaceType";
@@ -10,7 +11,11 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import UpdateWorkspaceComponent from "./update-workspace";
 
-const Favorite = () => {
+type props = {
+	setWorkspaces: React.Dispatch<React.SetStateAction<Workspace[] | undefined>>;
+};
+
+const Favorite = ({ setWorkspaces: setWorkspaceParent }: props) => {
 	const [workspaces, setWorkspaces] = useState<
 		WorkspacePayloadType["payload"] | undefined
 	>();
@@ -57,6 +62,7 @@ const Favorite = () => {
 								<UpdateWorkspaceComponent
 									workspaceId={workspace.workspaceId}
 									workspaceName={workspace.workspaceName}
+									setWorkspaces={setWorkspaceParent}
 								/>
 							</div>
 						);

@@ -25,7 +25,7 @@ const ToggleStarFavorite = ({ workspaceTasks }: props) => {
 			});
 
 			toast.success("Favorite status updated successfully!");
-			window.location.reload();
+			// window.location.reload();
 		} catch (error) {
 			setIsToggle((prev) => !prev);
 			toast.error("Failed to update favorite status.");

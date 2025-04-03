@@ -1,12 +1,21 @@
 "use client";
 import React, { useState } from "react";
 import CardComponent from "./card";
-import { CreateTaskProps, STATUS, TasksType } from "@/types/tasks/TaskType";
+import {
+	CreateTaskProps,
+	STATUS,
+	TasksType,
+	TaskType,
+	UpdateTaskType,
+} from "@/types/tasks/TaskType";
 import { updateTaskStatusByWorkspaceIdAction } from "@/actions/task/updateTaskStatusByWorkspaceIdAction";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import TaskForm from "./taskForm";
 import { createTaskByWorkspaceIdAction } from "@/actions/task/createTaskByWorkspaceIdAction";
+import { useRouter } from "next/navigation";
+import { deleteTaskByIdAction } from "@/actions/task/deleteTaskByIdAction";
+import { updateTaskByIdAction } from "@/actions/task/updateTaskByIdAction";
 
 type props = {
 	initialTasks: TasksType["payload"];
@@ -15,15 +24,54 @@ type props = {
 
 const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 	const [tasks, setTasks] = useState(initialTasks);
-	const [editingTask, setEditingTask] = useState(null);
+	const [editingTask, setEditingTask] = useState<TaskType["payload"] | null>(
+		null
+	);
 	const [isFormOpen, setIsFormOpen] = useState(false);
+	const router = useRouter();
 
-	const handleSave = () => {
+	const handleSave = async (updateTask: CreateTaskProps) => {
 		try {
 			if (editingTask) {
-				// Update to the backend
+				// Update
+				console.log("Update", updateTask);
+				setTasks((prev) =>
+					prev.map((task) =>
+						task.taskId === editingTask.taskId
+							? {
+									...task,
+									taskTitle: updateTask.taskTitle,
+									taskDetails: updateTask.taskDetails,
+									tag: updateTask.tag,
+									endDate: updateTask.endDate,
+							  }
+							: task
+					)
+				);
+
+				const data: UpdateTaskType = await updateTaskByIdAction({
+					taskId: editingTask.taskId,
+					workspaceId,
+					body: updateTask,
+				});
+
+				if (data.status === "OK") {
+					toast.success(data.message);
+					router.refresh();
+				} else {
+					toast.error(data.message);
+				}
 			} else {
-				// Create new Task
+				// Create
+				console.log("Create", updateTask);
+				createTaskByWorkspaceIdAction({ workspaceId, body: updateTask }).then(
+					(data) => {
+						if (data) {
+							toast.success("Create task successfully");
+							setTasks((prev) => [...prev, data]);
+						}
+					}
+				);
 			}
 		} catch (err) {
 			console.log(err);
@@ -49,21 +97,25 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 		});
 	};
 
-	const handleCreateTask = (tasks: CreateTaskProps) => {
-		console.log(tasks);
-
-		createTaskByWorkspaceIdAction({ workspaceId, body: tasks }).then((data) => {
-			if (data) {
-				toast.success("Create task successfully");
-				setTasks((prev) => [...prev, data]);
-			}
-		});
+	const handleOnReset = () => {
+		setEditingTask(null);
 	};
 
 	const statusGroups = {
 		NOT_STARTED: tasks.filter((t) => t.status === "NOT_STARTED"),
 		IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS"),
 		FINISHED: tasks.filter((t) => t.status === "FINISHED"),
+	};
+
+	const handleOnDelete = async (taskId: string) => {
+		setTasks((prev) => prev.filter((task) => task.taskId !== taskId));
+
+		const data = await deleteTaskByIdAction({ taskId, workspaceId });
+
+		if (data) {
+			toast.success("Delete task successfully");
+			router.refresh();
+		}
 	};
 
 	return (
@@ -86,6 +138,11 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 						key={task.taskId}
 						task={task}
 						onStatusChange={handleStatusChange}
+						onEdit={(task) => {
+							setEditingTask(task);
+							setIsFormOpen(true);
+						}}
+						onDelete={(taskId) => handleOnDelete(taskId)}
 					/>
 				))}
 			</div>
@@ -99,6 +156,11 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 						key={task.taskId}
 						task={task}
 						onStatusChange={handleStatusChange}
+						onEdit={(task) => {
+							setEditingTask(task);
+							setIsFormOpen(true);
+						}}
+						onDelete={(taskId) => handleOnDelete(taskId)}
 					/>
 				))}
 			</div>
@@ -112,16 +174,23 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 						key={task.taskId}
 						task={task}
 						onStatusChange={handleStatusChange}
+						onEdit={(task) => {
+							setEditingTask(task);
+							setIsFormOpen(true);
+						}}
+						onDelete={(taskId) => handleOnDelete(taskId)}
 					/>
 				))}
 			</div>
 			{/* Create new Tasks */}
 			<TaskForm
-				handleCreateTask={handleCreateTask}
+				key={editingTask?.taskId}
 				open={isFormOpen}
 				setOpen={setIsFormOpen}
 				handleSave={handleSave}
-				initialTasks={initialTasks}
+				initialTask={editingTask}
+				handleOnReset={handleOnReset}
+				startDateEdit={editingTask?.startDate}
 			/>
 		</div>
 	);

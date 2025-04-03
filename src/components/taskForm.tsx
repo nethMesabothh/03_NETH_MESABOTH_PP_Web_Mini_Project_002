@@ -28,52 +28,77 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { CreateTaskProps, TasksType } from "@/types/tasks/TaskType";
+import { CreateTaskProps, TasksType, TaskType } from "@/types/tasks/TaskType";
 import { TYPE_TASK_LISTS } from "@/lib/constant";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type props = {
-	handleCreateTask: (tasks: CreateTaskProps) => void;
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
-	handleSave: () => void;
-	initialTasks: TasksType["payload"];
+	handleSave: (updateTask: CreateTaskProps) => void;
+	initialTask: TaskType["payload"] | null;
+	handleOnReset: () => void;
+	startDateEdit: string | undefined;
 };
 
-const formSchema = z.object({
-	title: z.string().min(2).max(50),
-	tag: z
-		.string({ required_error: "Tag is required" })
-		.min(1, "Tag cannot be empty"),
-	endDate: z.date({
-		required_error: "End date is required",
-		invalid_type_error: "Invalid date format",
-	}),
-	Details: z.string().optional(),
-});
+const formSchema = (startDate?: string) =>
+	z.object({
+		title: z.string().min(2).max(50),
+		tag: z
+			.string({ required_error: "Tag is required" })
+			.min(1, "Tag cannot be empty"),
+		endDate: z
+			.date({
+				required_error: "End date is required",
+				invalid_type_error: "Invalid date format",
+			})
+			.refine(
+				(date) => {
+					if (!startDate) return true;
+
+					const start = new Date(startDate);
+
+					return start <= date;
+				},
+				{
+					message: "End date cannot be earlier than the start date",
+				}
+			),
+		Details: z.string().optional(),
+	});
 
 const TaskForm = ({
-	handleCreateTask,
 	handleSave,
 	open,
 	setOpen,
-	initialTasks,
+	initialTask,
+	handleOnReset,
+	startDateEdit,
 }: props) => {
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			title: "",
-			tag: "",
-			endDate: new Date(),
-			Details: "",
-		},
+	const form = useForm<z.infer<ReturnType<typeof formSchema>>>({
+		resolver: zodResolver(formSchema(startDateEdit)),
+		defaultValues: initialTask
+			? {
+					title: initialTask.taskTitle,
+					tag: initialTask.tag,
+					endDate: initialTask.endDate
+						? new Date(initialTask.endDate)
+						: new Date(),
+					Details: initialTask.taskDetails,
+			  }
+			: {
+					title: "",
+					tag: "",
+					endDate: new Date(),
+					Details: "",
+			  },
 	});
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(values: z.infer<ReturnType<typeof formSchema>>) {
 		const formattedValues = {
 			...values,
 			endDate: new Date(values.endDate).toISOString(),
 		};
-		handleCreateTask({
+		handleSave({
 			taskTitle: formattedValues.title,
 			taskDetails: formattedValues?.Details ?? "",
 			tag: formattedValues.tag,
@@ -82,15 +107,44 @@ const TaskForm = ({
 		setOpen(false);
 	}
 
+	useEffect(() => {
+		if (initialTask) {
+			form.reset({
+				title: initialTask.taskTitle,
+				tag: initialTask.tag,
+				endDate: initialTask.endDate
+					? new Date(initialTask.endDate)
+					: new Date(),
+				Details: initialTask.taskDetails,
+			});
+		} else {
+			form.reset({
+				title: "",
+				tag: "",
+				endDate: new Date(),
+				Details: "",
+			});
+		}
+	}, [initialTask, form]);
+
+	const onReset = () => {
+		handleOnReset();
+	};
+
 	return (
 		<div className="fixed top-28 right-30">
 			<AlertDialog open={open} onOpenChange={setOpen}>
-				<AlertDialogTrigger className="bg-[#4379F2] text-white py-2 px-4 rounded-2xl cursor-pointer">
+				<AlertDialogTrigger
+					className="bg-[#4379F2] text-white py-2 px-4 rounded-2xl cursor-pointer"
+					onClick={onReset}
+				>
 					New Task
 				</AlertDialogTrigger>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Create New Task</AlertDialogTitle>
+						<AlertDialogTitle>
+							{initialTask ? "Editing Task" : "Create New Task"}{" "}
+						</AlertDialogTitle>
 						<Form {...form}>
 							<form
 								onSubmit={form.handleSubmit(onSubmit)}
@@ -145,7 +199,7 @@ const TaskForm = ({
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Title</FormLabel>
-											<DatePicker {...field} />
+											<DatePicker {...field} initialTask={initialTask} />
 											<FormMessage />
 										</FormItem>
 									)}
