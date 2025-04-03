@@ -23,6 +23,7 @@ import { Input } from "./ui/input";
 import { WorkspacePayloadType } from "@/types/workspace/workspaceType";
 import { useRouter } from "next/navigation";
 import Favorite from "./favorite";
+import { getStatusColor, getStatusColorNumber } from "@/lib/helper";
 
 const Sidebar = () => {
 	const [workspaces, setWorkspaces] =
@@ -68,7 +69,7 @@ const Sidebar = () => {
 			<div className="flex flex-col mx-10 w-[130%] justify-center items-center mt-10">
 				<div className="flex flex-col w-[100%]">
 					<div className="flex justify-between items-center w-full">
-						<h1>Workspace</h1>
+						<h1 className="text-xl text-muted-foreground my-2">Workspace</h1>
 						<Dialog open={isOpen} onOpenChange={setIsOpen}>
 							<DialogTrigger asChild className="cursor-pointer">
 								<Image src="/add-square.png" alt="add" width={20} height={20} />
@@ -98,7 +99,7 @@ const Sidebar = () => {
 						</Dialog>
 					</div>
 					<div
-						className="flex flex-col gap-2 mt-4 h-[10rem] overflow-auto [&::-webkit-scrollbar]:w-2
+						className="flex flex-col space-y-3 gap-2 mt-4 h-[10rem] overflow-auto [&::-webkit-scrollbar]:w-2
   					[&::-webkit-scrollbar-track]:rounded-full
   					[&::-webkit-scrollbar-track]:bg-gray-100
   					[&::-webkit-scrollbar-thumb]:rounded-full
@@ -106,17 +107,24 @@ const Sidebar = () => {
   					dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   					dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
 					>
-						{workspaces?.map((workspace) => (
+						{workspaces?.map((workspace, index) => (
 							<div
 								key={workspace.workspaceId}
-								className="flex items-center justify-between px-2"
+								className="flex items-center justify-between px-2 "
 							>
-								<Link
-									href={`/todo/${workspace.workspaceId}/?q=${workspace.workspaceName}`}
-									className="flex justify-between"
-								>
-									<h1>{workspace.workspaceName}</h1>
-								</Link>
+								<div className="flex items-center gap-3">
+									<div
+										className={`rounded-full w-2 h-2 ${getStatusColorNumber(
+											index
+										)}`}
+									></div>
+									<Link
+										href={`/todo/${workspace.workspaceId}/?q=${workspace.workspaceName}`}
+										className="flex justify-between"
+									>
+										<h1>{workspace.workspaceName}</h1>
+									</Link>
+								</div>
 								<UpdateWorkspaceComponent
 									workspaceId={workspace.workspaceId}
 									workspaceName={workspace.workspaceName}

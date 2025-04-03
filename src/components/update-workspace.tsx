@@ -36,28 +36,28 @@ const UpdateWorkspaceComponent = ({
 	const [updateName, setUpdateName] = useState<string | undefined>();
 	const [isOpen, setIsOpen] = useState(false);
 
-	const handleOnSave = () => {
+	const handleOnSave = async () => {
 		if (!updateName?.trim()) {
 			toast.error("Workspace name cannot be empty");
 			return;
 		}
 
-		updateWorkspaceByIdAction({
+		const data = await updateWorkspaceByIdAction({
 			workspaceId,
 			workspaceName: updateName ?? "",
-		}).then((data) => {
-			if (data) {
-				toast("Update successfully!");
-				setIsOpen(false);
-				setWorkspaces((prev) =>
-					prev?.map((workspace) =>
-						workspace.workspaceId === data.workspaceId
-							? { ...workspace, workspaceName: updateName }
-							: workspace
-					)
-				);
-			}
 		});
+
+		if (data) {
+			setWorkspaces((prev) =>
+				prev?.map((workspace) =>
+					workspace.workspaceId === data.workspaceId
+						? { ...workspace, workspaceName: updateName }
+						: workspace
+				)
+			);
+			toast("Update successfully!");
+			setIsOpen(false);
+		}
 	};
 
 	return (

@@ -7,7 +7,25 @@ export const getStatusColor = (status: string) => {
 		case "FINISHED":
 			return "bg-[#45B7F6]"; // Blue
 		default:
-			return "bg-[#CCCCCC]";
+			return "bg-[#EEEFFF]";
+	}
+};
+
+export const getStatusColorNumber = (number: number): string => {
+	// Ensure number is at least 1 and cycle every 4
+	const cycle = Math.max(1, number % 4 || 4);
+
+	switch (cycle) {
+		case 1:
+			return "bg-[#FF6B6B]"; // Red
+		case 2:
+			return "bg-[#4ECDC4]"; // Teal
+		case 3:
+			return "bg-[#45B7F6]"; // Blue
+		case 4:
+			return "bg-[#777EEF]"; // Gray
+		default:
+			return "bg-[#777EEF]"; // Fallback
 	}
 };
 /**
