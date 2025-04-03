@@ -120,7 +120,7 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 
 	return (
 		<div
-			className="flex gap-10 items-start justify-evenly h-[47rem] overflow-auto overflow-y-auto px-2 [&::-webkit-scrollbar]:w-2
+			className="flex gap-10 items-start justify-evenly max-xl:flex-col  h-[47rem] overflow-auto overflow-y-auto px-2 [&::-webkit-scrollbar]:w-2
   					[&::-webkit-scrollbar-track]:rounded-full
   					[&::-webkit-scrollbar-track]:bg-gray-100
   					[&::-webkit-scrollbar-thumb]:rounded-full

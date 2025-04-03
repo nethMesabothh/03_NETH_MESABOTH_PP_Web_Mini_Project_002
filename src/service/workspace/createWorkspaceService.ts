@@ -8,7 +8,6 @@ export const createWorkspaceService = async ({
 }: {
 	workspaceName: string;
 }) => {
-	console.log(workspaceName);
 	const session: SessionType = (await auth()) as SessionType;
 	const response = await fetch(
 		`${process.env.NEXT_PUBLIC_AUTH_BASE_URL}/workspace`,
@@ -23,6 +22,5 @@ export const createWorkspaceService = async ({
 	);
 
 	const data: WorkspaceCreateType = await response.json();
-	console.log(data);
 	return data.payload;
 };

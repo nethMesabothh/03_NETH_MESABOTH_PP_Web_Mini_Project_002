@@ -14,6 +14,5 @@ export const signInService = async ({ credentials }: UserType) => {
 	);
 
 	const data: UserResponseType = await response.json();
-	console.log(data);
 	return data.payload;
 };

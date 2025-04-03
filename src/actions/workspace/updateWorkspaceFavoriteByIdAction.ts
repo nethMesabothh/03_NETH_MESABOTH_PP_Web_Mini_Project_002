@@ -10,7 +10,6 @@ export const updateWorkspaceFavoriteByIdAction = async ({
 	workspaceId: string;
 	favorite: boolean;
 }) => {
-	console.log(workspaceId, favorite);
 	const data = await updateFavoriteStatusByIdService({ workspaceId, favorite });
 	revalidateTag("workspace");
 

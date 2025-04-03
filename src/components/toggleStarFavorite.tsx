@@ -12,7 +12,6 @@ type props = {
 
 const ToggleStarFavorite = ({ workspaceTasks }: props) => {
 	const [isToggle, setIsToggle] = useState<boolean>(workspaceTasks.isFavorite);
-	const router = useRouter();
 
 	const handleOnToggle = async () => {
 		const newToggleState = !isToggle;
@@ -25,7 +24,7 @@ const ToggleStarFavorite = ({ workspaceTasks }: props) => {
 			});
 
 			toast.success("Favorite status updated successfully!");
-			// window.location.reload();
+			window.location.reload();
 		} catch (error) {
 			setIsToggle((prev) => !prev);
 			toast.error("Failed to update favorite status.");

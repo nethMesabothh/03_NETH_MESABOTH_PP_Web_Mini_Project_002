@@ -8,7 +8,6 @@ export const getWorkspaceByIdAction = async ({
 }: {
 	workspaceId: string;
 }) => {
-	console.log(workspaceId);
 	const data = await getWorkspaceByIdService({ workspaceId });
 	revalidateTag("workspace");
 

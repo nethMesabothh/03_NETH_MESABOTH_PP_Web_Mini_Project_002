@@ -33,7 +33,6 @@ export const updateTaskByIdService = async ({
 	);
 
 	const data: UpdateTaskType = await response.json();
-	console.log(data);
 
 	return data;
 };

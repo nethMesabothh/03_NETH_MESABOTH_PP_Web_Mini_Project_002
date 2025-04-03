@@ -55,7 +55,7 @@ export default function LoginComponent() {
 			{/* underline */}
 			<div>
 				<div className="border-b border-b-light-steel-blue"></div>
-				<div className="capitalize text-right mt-2 font-normal">
+				<div className="capitalize text-center mt-2 font-normal">
 					create new accont?{" "}
 					<Link
 						href={"/register"}

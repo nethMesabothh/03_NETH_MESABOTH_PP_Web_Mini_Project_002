@@ -31,7 +31,6 @@ export const createTaskByWorkspaceIdService = async ({
 	);
 
 	const data: TaskType = await response.json();
-	console.log(data);
 
 	return data.payload;
 };

@@ -28,7 +28,6 @@ export const updateWorkspaceByIdService = async ({
 		);
 
 		const data: WorkSpaceByIdType = await response.json();
-		console.log(data);
 
 		return data.payload;
 	} catch (error) {

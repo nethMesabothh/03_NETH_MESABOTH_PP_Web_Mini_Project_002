@@ -25,6 +25,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { formatDate, getStatusColor } from "@/lib/helper";
 
 type props = {
 	task: TaskType["payload"];
@@ -96,7 +97,9 @@ export default function CardComponent({
 					</p>
 
 					{/* status */}
-					<div className={`rounded-full w-8 h-8 bg-watermelon-red`}></div>
+					<div
+						className={`rounded-full w-8 h-8 ${getStatusColor(task.status)}`}
+					></div>
 				</div>
 			</div>
 
@@ -120,7 +123,7 @@ export default function CardComponent({
 
 				{/* date */}
 				<p className="flex gap-3 text-light-steel-blue">
-					<Clock size={22} /> {task.startDate}
+					<Clock size={22} /> {formatDate(task.endDate)}
 				</p>
 			</div>
 		</div>

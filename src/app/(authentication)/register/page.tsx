@@ -3,10 +3,10 @@ import RegisterComponent from "../_components/register";
 
 export default function RegisterPage() {
 	return (
-		<main>
+		<main className="min-h-screen flex justify-center items-center">
 			<div className="space-y-6 w-1/3  mx-auto bg-white drop-shadow-light-steel-blue p-12 rounded-3xl ">
 				<h1 className="font-bold text-3xl text-center">
-					Sign In to Plan<span className="text-watermelon-red">I</span>t{" "}
+					Sign Up to Plan<span className="text-watermelon-red">I</span>t{" "}
 				</h1>
 				<RegisterComponent />
 

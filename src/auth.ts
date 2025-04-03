@@ -41,8 +41,6 @@ const authConfig = NextAuth({
 						token: user.token,
 					};
 
-					console.log(newUser);
-
 					return newUser;
 				} catch (error: any) {
 					if (error instanceof ZodError) {
