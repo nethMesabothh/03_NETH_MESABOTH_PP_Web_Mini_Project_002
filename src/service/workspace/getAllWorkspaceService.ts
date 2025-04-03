@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { SessionType } from "@/types/sessionType";
 import { WorkspaceType } from "@/types/workspace/workspaceType";
-import { revalidatePath } from "next/cache";
 
 export const getAllWorkspaceService = async () => {
 	const session: SessionType = (await auth()) as SessionType;
@@ -16,8 +15,6 @@ export const getAllWorkspaceService = async () => {
 			next: { tags: ["workspace"] },
 		}
 	);
-
-	revalidatePath("/");
 
 	const data: WorkspaceType = await response.json();
 

@@ -4,7 +4,6 @@ import {
 	WorkSpaceByIdType,
 	WorkspaceType,
 } from "@/types/workspace/workspaceType";
-import { revalidatePath } from "next/cache";
 
 export const updateWorkspaceByIdService = async ({
 	workspaceId,

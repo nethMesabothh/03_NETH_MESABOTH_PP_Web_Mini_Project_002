@@ -97,11 +97,19 @@ const Sidebar = () => {
 							</DialogContent>
 						</Dialog>
 					</div>
-					<div className="flex flex-col gap-2 mt-4">
+					<div
+						className="flex flex-col gap-2 mt-4 h-[10rem] overflow-auto [&::-webkit-scrollbar]:w-2
+  					[&::-webkit-scrollbar-track]:rounded-full
+  					[&::-webkit-scrollbar-track]:bg-gray-100
+  					[&::-webkit-scrollbar-thumb]:rounded-full
+  					[&::-webkit-scrollbar-thumb]:bg-gray-300
+  					dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  					dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+					>
 						{workspaces?.map((workspace) => (
 							<div
 								key={workspace.workspaceId}
-								className="flex items-center justify-between"
+								className="flex items-center justify-between px-2"
 							>
 								<Link
 									href={`/todo/${workspace.workspaceId}/?q=${workspace.workspaceName}`}

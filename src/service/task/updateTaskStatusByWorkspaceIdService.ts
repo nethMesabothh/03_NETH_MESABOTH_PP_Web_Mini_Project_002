@@ -1,29 +1,30 @@
 import { auth } from "@/auth";
 import { SessionType } from "@/types/sessionType";
-import { WorkspaceType } from "@/types/workspace/workspaceType";
+import { TaskType } from "@/types/tasks/TaskType";
 
-export const updateFavoriteStatusByIdService = async ({
+export const updateTaskStatusByWorkspaceIdService = async ({
+	taskId,
 	workspaceId,
-	favorite,
+	status,
 }: {
+	taskId: string;
 	workspaceId: string;
-	favorite: boolean;
+	status: string;
 }) => {
 	const session: SessionType = (await auth()) as SessionType;
 
 	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_AUTH_BASE_URL}/workspace/${workspaceId}/favorite?favorite=${favorite}`,
+		`${process.env.NEXT_PUBLIC_AUTH_BASE_URL}/task/${taskId}/workspace/${workspaceId}/status?status=${status}`,
 		{
 			method: "PATCH",
 			headers: {
 				Authorization: `Bearer ${session.accessToken}`,
 				"Content-Type": "application/json",
 			},
-			next: { tags: ["workspace"] },
 		}
 	);
 
-	const data: WorkspaceType = await response.json();
+	const data: TaskType = await response.json();
 
 	return data.payload;
 };

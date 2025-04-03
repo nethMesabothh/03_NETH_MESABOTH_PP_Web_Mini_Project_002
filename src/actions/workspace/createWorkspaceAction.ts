@@ -1,7 +1,7 @@
 "use server";
 
 import { createWorkspaceService } from "@/service/workspace/createWorkspaceService";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 export const createWorkspaceAction = async ({
 	workspaceName,
@@ -10,7 +10,6 @@ export const createWorkspaceAction = async ({
 }) => {
 	const data = await createWorkspaceService({ workspaceName });
 	revalidateTag("workspace");
-	revalidatePath("/todo", "layout");
 
 	return data;
 };
