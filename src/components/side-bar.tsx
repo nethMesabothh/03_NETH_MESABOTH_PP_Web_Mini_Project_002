@@ -23,7 +23,7 @@ import { Input } from "./ui/input";
 import { WorkspacePayloadType } from "@/types/workspace/workspaceType";
 import { useRouter } from "next/navigation";
 import Favorite from "./favorite";
-import { getStatusColor, getStatusColorNumber } from "@/lib/helper";
+import { getStatusColorNumber } from "@/lib/helper";
 
 const Sidebar = () => {
 	const [workspaces, setWorkspaces] =
@@ -49,10 +49,8 @@ const Sidebar = () => {
 			toast.success("Workspace created successfully!");
 		} catch (error) {
 			toast.error("Failed to create workspace");
-		} finally {
-			setIsOpen(false);
-			router.refresh();
 		}
+		setIsOpen(false);
 	};
 
 	useEffect(() => {
@@ -75,13 +73,16 @@ const Sidebar = () => {
 								<Image src="/add-square.png" alt="add" width={20} height={20} />
 							</DialogTrigger>
 							<DialogContent className="sm:max-w-[425px]">
-								<form onSubmit={handleOnSubmit}>
+								<form onSubmit={handleOnSubmit} className="space-y-4">
 									<DialogHeader>
 										<DialogTitle>Create New Workspace</DialogTitle>
 									</DialogHeader>
-									<div className="grid gap-4">
-										<div className="grid grid-cols-1 items-center gap-2">
-											<Label htmlFor="workspaceName" className="text-right">
+									<div className="grid gap-4 space-y-2">
+										<div className="grid grid-cols-1 items-center gap-4">
+											<Label
+												htmlFor="workspaceName"
+												className="text-right text-muted-foreground"
+											>
 												Workspace Name
 											</Label>
 											<Input
