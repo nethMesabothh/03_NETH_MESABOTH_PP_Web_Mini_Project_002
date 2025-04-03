@@ -7,6 +7,16 @@ import {
 } from "@/components/ui/select";
 import { TaskType } from "@/types/tasks/TaskType";
 import { Clock, Ellipsis } from "lucide-react";
+import { Button } from "./ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import TaskComponent from "./task";
 
 type props = {
 	task: TaskType["payload"];
@@ -19,7 +29,19 @@ export default function CardComponent({ task, onStatusChange }: props) {
 			<div className="p-5">
 				<div className="flex justify-between">
 					<h2 className="text-xl font-bold capitalize">{task.taskTitle}</h2>
-					<Ellipsis />
+					<Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger>
+								<Ellipsis />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem>
+									{/* <TaskComponent initialTasks={task}/> */}
+								</DropdownMenuItem>
+								<DropdownMenuItem>Delete</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</Button>
 				</div>
 
 				{/* task details */}

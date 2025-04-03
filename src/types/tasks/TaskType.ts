@@ -31,3 +31,24 @@ export type TaskType = {
 		endDate: string;
 	};
 };
+
+export type CreateTaskType = {
+	message: string;
+	status: string;
+	payload: {
+		taskId: string;
+		taskTitle: string;
+		taskDetails: string;
+		tag: string;
+		status: string;
+		startDate: string;
+		endDate: string;
+	};
+};
+
+export type CreateTaskProps = {
+	taskTitle: string;
+	taskDetails: string;
+	tag: string;
+	endDate: string;
+};

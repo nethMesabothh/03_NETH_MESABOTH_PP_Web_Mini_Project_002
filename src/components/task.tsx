@@ -1,9 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import CardComponent from "./card";
-import { STATUS, TasksType } from "@/types/tasks/TaskType";
+import { CreateTaskProps, STATUS, TasksType } from "@/types/tasks/TaskType";
 import { updateTaskStatusByWorkspaceIdAction } from "@/actions/task/updateTaskStatusByWorkspaceIdAction";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
+import TaskForm from "./taskForm";
+import { createTaskByWorkspaceIdAction } from "@/actions/task/createTaskByWorkspaceIdAction";
 
 type props = {
 	initialTasks: TasksType["payload"];
@@ -12,6 +15,22 @@ type props = {
 
 const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 	const [tasks, setTasks] = useState(initialTasks);
+	const [editingTask, setEditingTask] = useState(null);
+	const [isFormOpen, setIsFormOpen] = useState(false);
+
+	const handleSave = () => {
+		try {
+			if (editingTask) {
+				// Update to the backend
+			} else {
+				// Create new Task
+			}
+		} catch (err) {
+			console.log(err);
+		} finally {
+			setEditingTask(null), setIsFormOpen(false);
+		}
+	};
 
 	const handleStatusChange = (taskId: string, newStatus: string) => {
 		setTasks((prev) =>
@@ -30,6 +49,17 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 		});
 	};
 
+	const handleCreateTask = (tasks: CreateTaskProps) => {
+		console.log(tasks);
+
+		createTaskByWorkspaceIdAction({ workspaceId, body: tasks }).then((data) => {
+			if (data) {
+				toast.success("Create task successfully");
+				setTasks((prev) => [...prev, data]);
+			}
+		});
+	};
+
 	const statusGroups = {
 		NOT_STARTED: tasks.filter((t) => t.status === "NOT_STARTED"),
 		IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS"),
@@ -37,9 +67,17 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 	};
 
 	return (
-		<div className="flex gap-10 items-start justify-evenly">
+		<div
+			className="flex gap-10 items-start justify-evenly h-[47rem] overflow-auto overflow-y-auto px-2 [&::-webkit-scrollbar]:w-2
+  					[&::-webkit-scrollbar-track]:rounded-full
+  					[&::-webkit-scrollbar-track]:bg-gray-100
+  					[&::-webkit-scrollbar-thumb]:rounded-full
+  					[&::-webkit-scrollbar-thumb]:bg-gray-300
+  					dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  					dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+		>
 			{/* Not Started */}
-			<div className="flex flex-col w-[25rem]">
+			<div className="flex flex-col w-[25rem] ">
 				<h1 className="mt-5 pb-3 text-xl text-[#FF6B6B] border-b-2 border-[#FF6B6B]">
 					Not Started
 				</h1>
@@ -52,7 +90,7 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 				))}
 			</div>
 			{/* In Progress */}
-			<div className="flex flex-col w-[25rem]">
+			<div className="flex flex-col w-[25rem] h-[45rem] ">
 				<h1 className="mt-5 pb-3 text-xl text-[#4ECDC4] border-b-2 border-[#4ECDC4]">
 					In Progress
 				</h1>
@@ -77,6 +115,14 @@ const TaskComponent = ({ initialTasks, workspaceId }: props) => {
 					/>
 				))}
 			</div>
+			{/* Create new Tasks */}
+			<TaskForm
+				handleCreateTask={handleCreateTask}
+				open={isFormOpen}
+				setOpen={setIsFormOpen}
+				handleSave={handleSave}
+				initialTasks={initialTasks}
+			/>
 		</div>
 	);
 };
