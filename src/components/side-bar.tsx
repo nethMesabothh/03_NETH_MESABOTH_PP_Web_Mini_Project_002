@@ -29,7 +29,6 @@ const Sidebar = () => {
 	const [workspaces, setWorkspaces] =
 		useState<WorkspacePayloadType["payload"]>();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const router = useRouter();
 
 	const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
